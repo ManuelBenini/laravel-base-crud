@@ -1,0 +1,13 @@
+header{
+    min-height: 50px;
+    ul{
+        list-style: none;
+        li{
+            margin-right: 10px;
+            .active{
+                color: red;
+                text-decoration: underline;
+            }
+        }
+    }
+}
