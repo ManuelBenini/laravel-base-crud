@@ -1,5 +1,5 @@
 @extends('layouts.main')
 
 @section('content')
-        <h2>Benvenuti nella homepage di Comics! Per vedere tutti i fumetti, cliccare su "Lista Comics"!</h2>
+        <h2>Welcome to the Comics homepage! To see all the comics, click on "Comics List"!</h2>
 @endsection

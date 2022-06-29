@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
-    <h1>Tutti i fumetti:</h1>
+    <h1>Comics:</h1>
 
     <div class="comics-container d-flex flex-wrap">
         @foreach ($comics as $comic)
