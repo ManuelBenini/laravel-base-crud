@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Comic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ComicsController extends Controller
 {
@@ -14,8 +15,8 @@ class ComicsController extends Controller
      */
     public function index()
     {
-        $comics = Comic::all();
-        return view('comics.index', compact('comics'));
+        $Comics = Comic::all();
+        return view('comics.index', compact('Comics'));
     }
 
     /**
@@ -36,15 +37,25 @@ class ComicsController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
+        #1 Method
+            // $data = $request->all();
 
-        $new_comic = new Comic;
-        $new_comic->title = $data['title'];
-        $new_comic->image = $data['image'];
-        $new_comic->type = $data['type'];
-        $new_comic->save();
+            // $new_comic = new Comic;
+            // $new_comic->title = $data['title'];
+            // $new_comic->image = $data['image'];
+            // $new_comic->type = $data['type'];
+            // $new_comic->save();
+        #
 
-        return redirect()->route('Comics.show', $new_comic->id);
+        #2 Method
+            $data = $request->all();
+            $data['slug'] = $this->createSlug($data['title']);
+            $new_comic = new Comic;
+            $new_comic->fill($data);
+            $new_comic->save();
+        #
+
+        return redirect()->route('Comics.show', $new_comic);
     }
 
     /**
@@ -53,10 +64,13 @@ class ComicsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Comic $Comic)
     {
-        $comic = Comic::find($id);
-        return view('comics.show', compact('comic'));
+        // $comic = Comic::find($id);
+        if($Comic){
+            return view('comics.show', compact('Comic'));
+        }
+        abort(404, 'Product not present in the database');
     }
 
     /**
@@ -65,9 +79,13 @@ class ComicsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Comic $Comic)
     {
-        //
+        // $comic = Comic::find($id);
+        if($Comic){
+            return view('Comics.edit', compact('Comic'));
+        }
+        abort(404, 'Product not present in the database');
     }
 
     /**
@@ -77,9 +95,20 @@ class ComicsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Comic $Comic)
     {
-        //
+        #metodo per prendere il Comic, oppure inserirlo nei parametri con Comic $Comic
+
+        $data = $request->all();
+
+        if($Comic->title != $data['title']){
+            $data['slug'] = $this->createSlug($data['title']);
+        }else{
+            $data['slug'] = $Comic->slug;
+        }
+
+        $Comic->update($data);
+        return redirect()->route('Comics.show', $Comic);
     }
 
     /**
@@ -88,8 +117,24 @@ class ComicsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Comic $Comic)
     {
-        //
+        // anche se di default richiede $id per noi è più comodo ricevere l'entità, quindi passo come parametro Comic $comic, dietro le quinte esegue una query di ricerca per ID ( $Comic = Comic::find($id))
+
+        $Comic->delete();
+        // con with metto in sessione l'avvenuta eliminazione
+        return redirect()->route('Comics.index')->with('deleted_product', "the comic '$Comic->title' was successfully deleted");
+    }
+
+    private function createSlug($string){
+        $slug = Str::slug($string , '-');
+        $control_slug = Comic::where('slug', $slug)->first();
+        $i = 0;
+        while($control_slug){
+            $slug = Str::slug($string , '-') . '-' .  $i;
+            $i++;
+            $control_slug = Comic::where('slug', $slug)->first();
+        }
+        return $slug;
     }
 }
