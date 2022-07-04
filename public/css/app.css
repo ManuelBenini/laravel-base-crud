@@ -12170,7 +12170,15 @@ main {
   min-height: calc(100vh - 75px);
 }
 
+.comics-container form .btn {
+  margin-left: 30px;
+}
+
 footer {
   min-height: 25px;
+}
+
+.error-msg {
+  color: red;
 }
 

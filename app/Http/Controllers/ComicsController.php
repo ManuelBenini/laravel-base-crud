@@ -47,6 +47,28 @@ class ComicsController extends Controller
             // $new_comic->save();
         #
 
+        # validation
+            $request->validate(
+                [
+                    'title' => 'required|max:50|min:3',
+                    'image' => 'required|max:255|min:10',
+                    'type' => 'required',
+                ],
+                /* Personalizzazione dei messaggi d'errore
+                    [
+                        'title.required' => 'Il campo nome è obbligatorio',
+                        'title.max' => 'Il campo nome deve avere al massimo :max caratteri',
+                        'title.min' => 'Il campo nome deve avere minimo :min caratteri',
+
+                        'image.required' => 'Il campo image è obbligatorio',
+                        'image.max' => 'Il campo image deve avere al massimo :max caratteri',
+                        'image.min' => 'Il campo image deve avere minimo :min caratteri',
+
+                    ]
+                */
+            );
+        #
+
         #2 Method
             $data = $request->all();
             $data['slug'] = $this->createSlug($data['title']);
@@ -98,6 +120,16 @@ class ComicsController extends Controller
     public function update(Request $request, Comic $Comic)
     {
         #metodo per prendere il Comic, oppure inserirlo nei parametri con Comic $Comic
+
+        # validation
+        $request->validate(
+            [
+                'title' => 'required|max:50|min:3',
+                'image' => 'required|max:255|min:10',
+                'type' => 'required',
+            ],
+        );
+    #
 
         $data = $request->all();
 
