@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Comic;
+use App\Http\Requests\ComicRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -35,7 +36,7 @@ class ComicsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ComicRequest $request)
     {
         #1 Method
             // $data = $request->all();
@@ -47,27 +48,29 @@ class ComicsController extends Controller
             // $new_comic->save();
         #
 
-        # validation
-            $request->validate(
-                [
-                    'title' => 'required|max:50|min:3',
-                    'image' => 'required|max:255|min:10',
-                    'type' => 'required',
-                ],
-                /* Personalizzazione dei messaggi d'errore
+        /*
+
+            # validation
+                $request->validate(
                     [
-                        'title.required' => 'Il campo nome è obbligatorio',
-                        'title.max' => 'Il campo nome deve avere al massimo :max caratteri',
-                        'title.min' => 'Il campo nome deve avere minimo :min caratteri',
+                        'title' => 'required|max:50|min:3',
+                        'image' => 'required|max:255|min:10',
+                        'type' => 'required',
+                    ],
+                    // Personalizzazione dei messaggi d'errore
+                        [
+                            'title.required' => 'Il campo nome è obbligatorio',
+                            'title.max' => 'Il campo nome deve avere al massimo :max caratteri',
+                            'title.min' => 'Il campo nome deve avere minimo :min caratteri',
 
-                        'image.required' => 'Il campo image è obbligatorio',
-                        'image.max' => 'Il campo image deve avere al massimo :max caratteri',
-                        'image.min' => 'Il campo image deve avere minimo :min caratteri',
+                            'image.required' => 'Il campo image è obbligatorio',
+                            'image.max' => 'Il campo image deve avere al massimo :max caratteri',
+                            'image.min' => 'Il campo image deve avere minimo :min caratteri',
 
-                    ]
-                */
-            );
-        #
+                        ]
+                );
+            #
+        */
 
         #2 Method
             $data = $request->all();
@@ -117,7 +120,7 @@ class ComicsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Comic $Comic)
+    public function update(ComicRequest $request, Comic $Comic)
     {
         #metodo per prendere il Comic, oppure inserirlo nei parametri con Comic $Comic
 
@@ -169,4 +172,30 @@ class ComicsController extends Controller
         }
         return $slug;
     }
+
+    /* Funzioni per centralizzare le regole di validazioni ed i messaggi. Questo è un metodo, il secondo è il creare una request (php artisan make:request NomeRequest) e mettere i dati lì dentro, come è stato fatto in questo progetto. 
+
+        private function validateRules(){
+            return [
+                'title' => 'required|max:50|min:3',
+                'image' => 'required|max:255|min:10',
+                'type' => 'required',
+            ];
+        }
+
+        private function validateMessages(){
+            return [
+                [
+                    'title.required' => 'Il campo nome è obbligatorio',
+                    'title.max' => 'Il campo nome deve avere al massimo :max caratteri',
+                    'title.min' => 'Il campo nome deve avere minimo :min caratteri',
+
+                    'image.required' => 'Il campo image è obbligatorio',
+                    'image.max' => 'Il campo image deve avere al massimo :max caratteri',
+                    'image.min' => 'Il campo image deve avere minimo :min caratteri',
+
+                ]
+            ];
+        }
+    */
 }
